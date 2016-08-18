@@ -1,0 +1,111 @@
+{#
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#}
+resources:
+- name: {{ env["deployment"] }}-spinnaker-ig
+  type: compute.v1.instanceGroupManager
+  properties:
+    baseInstanceName: {{ env["deployment"] }}-spinnaker
+    instanceTemplate: $(ref.{{ env["deployment"] }}-spinnaker-template.selfLink)
+    targetSize: 1
+    zone: {{ properties["zone"] }}
+- name: {{ env["deployment"] }}-spinnaker-template
+  type: compute.v1.instanceTemplate
+  properties:
+      zone: {{ properties["zone"] }}
+      properties:
+        serviceAccounts:
+          - email: spinnaker@vic-goog.iam.gserviceaccount.com
+            scopes:
+              - https://www.googleapis.com/auth/compute
+              - https://www.googleapis.com/auth/logging.write
+              - https://www.googleapis.com/auth/monitoring.write
+              - https://www.googleapis.com/auth/devstorage.full_control
+        machineType: {{ properties["machineType"] }}
+        networkInterfaces:
+        - network: global/networks/default
+          accessConfigs:
+          - name: External NAT
+            type: ONE_TO_ONE_NAT
+        disks:
+        - deviceName: boot
+          type: PERSISTENT
+          boot: true
+          autoDelete: true
+          diskType: pd-ssd
+          diskSizeGb: 256
+          initializeParams:
+            sourceImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-1404-lts
+        metadata:
+            items:
+            - key: startup-script
+              value: |
+                #!/bin/bash -xe
+                curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh
+                bash install-logging-agent.sh
+                curl -sSO https://repo.stackdriver.com/stack-install.sh
+                bash stack-install.sh --write-gcm
+
+                echo "deb https://dl.bintray.com/spinnaker/debians trusty spinnaker" > /etc/apt/sources.list.d/spinnaker.list
+                curl -s -f "https://bintray.com/user/downloadSubjectPublicKey?username=spinnaker" | apt-key add -
+                add-apt-repository -y ppa:openjdk-r/ppa
+                apt-get update
+                apt-get install -y openjdk-8-jdk spinnaker-clouddriver \
+                                   spinnaker-deck spinnaker-echo spinnaker-front50 \
+                                   spinnaker-gate spinnaker-igor spinnaker-orca \
+                                   spinnaker-rosco spinnaker unzip
+
+                # Configure Web Server for Gate
+                echo "Listen 127.0.0.1:9000" >> /etc/apache2/ports.conf
+                service apache2 restart
+
+                # Install Packer
+                mkdir -p /tmp/packer
+                pushd /tmp/packer
+                  curl -s -L -O https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip
+                  unzip -u -o -q packer_0.8.6_linux_amd64.zip -d /usr/bin
+                popd
+                rm -rf /tmp/packer
+                cat > /etc/default/spinnaker <<EOF
+                GATE_OPTS="-Dspring.profiles.active=local,googleOAuth"
+                SPINNAKER_GOOGLE_ENABLED=true
+                SPINNAKER_GOOGLE_PROJECT_ID={{ env["project"] }}
+                SPINNAKER_DEFAULT_STORAGE_BUCKET=spinnaker-{{ env["project"] }}
+                SPINNAKER_GOOGLE_DEFAULT_REGION={{ properties["region"] }}
+                SPINNAKER_GOOGLE_DEFAULT_ZONE={{ properties["zone"] }}
+
+                SPINNAKER_JENKINS_ENABLED=true
+                SPINNAKER_JENKINS_BASEURL=http://{{ properties["jenkinsIP"] }}/jenkins
+                SPINNAKER_JENKINS_USER=user
+                SPINNAKER_JENKINS_PASSWORD={{ properties["jenkinsPassword"] }}
+
+                SPINNAKER_REDIS_HOST={{ properties["redisIP"] }}
+                EOF
+
+                cat >> /opt/spinnaker/config/orca.yml <<EOF
+                script:
+                  master: Jenkins
+                  job: runSpinnakerScript
+                EOF
+
+                wget https://gist.githubusercontent.com/viglesiasce/fa9806d22cb7d9d92761b27693904a11/raw/spinnaker-local.yml -O /opt/spinnaker/config/spinnaker-local.yml
+
+                /opt/spinnaker/bin/reconfigure_spinnaker.sh
+                /opt/spinnaker/install/change_cassandra.sh --echo=inMemory --front50=gcs --change_defaults=true --change_local=false
+                start spinnaker
+                service clouddriver restart
+                service rosco restart
+                service orca restart
+                service igor restart
+
+                wget https://gist.githubusercontent.com/viglesiasce/ca07a1001bc5ca84957541fd80095d64/raw/runSpinnakerScript.xml
+                curl -X POST -H "Content-Type: application/xml" -d @runSpinnakerScript.xml "http://user:{{ properties["jenkinsPassword"] }}@{{ properties["jenkinsIP"] }}/jenkins/createItem?name=runSpinnakerScript"
