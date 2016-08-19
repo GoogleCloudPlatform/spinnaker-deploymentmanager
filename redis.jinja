@@ -29,12 +29,16 @@ resources:
               - https://www.googleapis.com/auth/logging.write
               - https://www.googleapis.com/auth/monitoring.write
         machineType: {{ properties["machineType"] }}
+        tags:
+          items:
+            - redis-vm
         networkInterfaces:
-        - network: global/networks/default
-          networkIP: {{ properties["redisIP"] }}
+        - network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
+          subnetwork: $(ref.{{ env["deployment"] }}-spinnaker-subnetwork.selfLink)
           accessConfigs:
           - name: External NAT
             type: ONE_TO_ONE_NAT
+          networkIP: {{ properties["redisIP"] }}
         disks:
         - deviceName: boot
           type: PERSISTENT
@@ -43,15 +47,7 @@ resources:
           initializeParams:
             sourceImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-1404-lts
         metadata:
-            items:
-            - key: startup-script
-              value: |
-                #!/bin/bash -xe
-                apt-get update
-                apt-get install -y redis-server
-                sed -i 's#^bind.*#bind 0.0.0.0#g' /etc/redis/redis.conf
-                service redis-server restart
-                curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh
-                bash install-logging-agent.sh
-                curl -sSO https://repo.stackdriver.com/stack-install.sh
-                bash stack-install.sh --write-gcm
+          items:
+          - key: startup-script
+            value: |
+               {{ imports['redis.sh']|indent(15) }}

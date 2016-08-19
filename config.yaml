@@ -1,37 +1,27 @@
 imports:
+- path: spinnaker-stack.jinja
+- path: network.jinja
 - path: spinnaker.jinja
+- path: scripts/spinnaker.sh
+  name: spinnaker.sh
 - path: redis.jinja
+- path: scripts/redis.sh
+  name: redis.sh
 - path: jenkins.jinja
+- path: scripts/jenkins.sh
+  name: jenkins.sh
 
 resources:
-# 1. create network/subnetwork
-# 2. create storage bucket
-# 3. Remove external IPs from redis and jenkins
-- name: spinnaker
-  type: spinnaker.jinja
+- type: spinnaker-stack.jinja
+  name: spinnaker-stack
   properties:
     region: us-west1
     zone: us-west1-a
-    machineType: n1-standard-4
+    ipCidrRange: 10.254.0.0/24
+    spinnakerMachineType: n1-standard-4
+    spinnakerIP: 10.254.0.200
     jenkinsPassword: testing-123
-    jenkinsIP: 10.240.0.201
-    redisIP: 10.240.0.202
-  metadata:
-    dependsOn:
-      - redis
-      - jenkins
-- name: redis
-  type: redis.jinja
-  properties:
-    region: us-west1
-    zone: us-west1-a
-    machineType: n1-highmem-2
-    redisIP: 10.240.0.202
-- name: jenkins
-  type: jenkins.jinja
-  properties:
-    region: us-west1
-    zone: us-west1-a
-    machineType: n1-standard-1
-    jenkinsPassword: testing-123
-    jenkinsIP: 10.240.0.201
+    jenkinsMachineType: n1-standard-1
+    jenkinsIP: 10.254.0.201
+    redisMachineType: n1-highmem-2
+    redisIP: 10.254.0.202

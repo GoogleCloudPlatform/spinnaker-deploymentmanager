@@ -1,0 +1,48 @@
+resources:
+- type: compute.v1.network
+  name: {{ env["deployment"] }}-spinnaker-network
+  properties:
+     name: spinnaker-network
+     autoCreateSubnetworks: false
+- type: compute.v1.subnetwork
+  name: {{ env["deployment"] }}-spinnaker-subnetwork
+  properties:
+    name: {{ env["deployment"] }}-spinnaker-subnetwork
+    network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
+    ipCidrRange: {{ properties["ipCidrRange"] }}
+    region: {{ properties["region"] }}
+- type: compute.v1.firewall
+  name: spinnaker-vm-ssh-fw
+  properties:
+     name: spinnaker-vm-ssh
+     network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
+     allowed:
+     - IPProtocol: tcp
+       ports: ["22"]
+     targetTags:
+     - allow-ssh
+- type: compute.v1.firewall
+  name: redis-fw
+  properties:
+    name: redis-vm
+    network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
+    allowed:
+    - IPProtocol: tcp
+      ports: ["6379"]
+    sourceTags:
+      - spinnaker-vm
+    targetTags:
+      - redis-vm
+      - allow-ssh
+- type: compute.v1.firewall
+  name: jenkins-fw
+  properties:
+     name: spinnaker-vm-ssh
+     network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
+     allowed:
+     - IPProtocol: tcp
+       ports: ["80"]
+     sourceTags:
+     - spinnaker-vm
+     targetTags:
+     - jenkins-vm
