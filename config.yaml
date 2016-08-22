@@ -27,7 +27,6 @@ resources:
     jenkinsIP: 10.254.0.201
     redisMachineType: n1-highmem-2
     redisIP: 10.254.0.202
-    bucketName: 
 
 imports:
 - name: spinnaker-stack.jinja
