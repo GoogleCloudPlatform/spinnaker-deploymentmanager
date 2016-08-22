@@ -1,6 +1,6 @@
 # Deployment Manager Templates for Spinnaker
 
-This repository contains Deployment Manager template for deploying Spinnaker.
+This repository contains Deployment Manager template for deploying [Spinnaker](http://www.spinnaker.io/).
 By default, this will deploy the following topology:
 
 ![](images/spinnaker-arch.png)
