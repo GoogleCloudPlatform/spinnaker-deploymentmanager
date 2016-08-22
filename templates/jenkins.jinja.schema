@@ -1,0 +1,18 @@
+info:
+  title: Jenkins
+  author: Vic Iglesias <viglesias@google.com>
+  description: Runs Jenkins
+  version: 1.0
+
+imports:
+- path: jenkins.jinja
+
+required:
+  - jenkinsPassword
+  - jenkinsMachineType
+  - jenkinsIP
+
+properties:
+  jenkinsPassword:
+    type: string
+    description: "Default password for the Jenkins instance"

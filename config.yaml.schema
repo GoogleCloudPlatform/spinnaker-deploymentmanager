@@ -1,0 +1,25 @@
+info:
+  title: Spinnaker
+  author: Vic Iglesias <viglesias@google.com>
+  description: Runs Spinnaker and its dependencies
+  version: 1.0
+
+imports:
+- path: config.yaml
+
+required:
+  - region
+  - zone
+  - ipCidrRange
+  - spinnakerMachineType
+  - spinnakerIP
+  - jenkinsPassword
+  - jenkinsMachineType
+  - jenkinsIP
+  - redisMachineType
+  - redisIP
+
+properties:
+  jenkinsPassword:
+    type: string
+    description: "Default password for the Jenkins instance"

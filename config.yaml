@@ -1,16 +1,3 @@
-imports:
-- path: spinnaker-stack.jinja
-- path: network.jinja
-- path: spinnaker.jinja
-- path: scripts/spinnaker.sh
-  name: spinnaker.sh
-- path: redis.jinja
-- path: scripts/redis.sh
-  name: redis.sh
-- path: jenkins.jinja
-- path: scripts/jenkins.sh
-  name: jenkins.sh
-
 resources:
 - type: spinnaker-stack.jinja
   name: spinnaker-stack
@@ -20,8 +7,28 @@ resources:
     ipCidrRange: 10.254.0.0/24
     spinnakerMachineType: n1-standard-4
     spinnakerIP: 10.254.0.200
-    jenkinsPassword: testing-123
+  # Fill this in
+  # jenkinsPassword: my-password-here
     jenkinsMachineType: n1-standard-1
     jenkinsIP: 10.254.0.201
     redisMachineType: n1-highmem-2
     redisIP: 10.254.0.202
+    bucketName: 
+
+imports:
+- name: spinnaker-stack.jinja
+  path: templates/spinnaker-stack.jinja
+- name: network.jinja
+  path: templates/network.jinja
+- name: spinnaker.jinja
+  path: templates/spinnaker.jinja
+- name: jenkins.jinja
+  path: templates/jenkins.jinja
+- name: redis.jinja
+  path: templates/redis.jinja
+- name: spinnaker.sh
+  path: scripts/spinnaker.sh
+- name: redis.sh
+  path: scripts/redis.sh
+- name: jenkins.sh
+  path: scripts/jenkins.sh
