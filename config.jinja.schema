@@ -1,0 +1,82 @@
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+info:
+  title: Spinnaker
+  author: Vic Iglesias <viglesias@google.com>
+  description: Runs Spinnaker and its dependencies
+  version: 1.0
+
+imports:
+- path: config.jinja
+- name: spinnaker-stack.jinja
+  path: templates/spinnaker-stack.jinja
+- name: network.jinja
+  path: templates/network.jinja
+- name: spinnaker.jinja
+  path: templates/spinnaker.jinja
+- name: jenkins.jinja
+  path: templates/jenkins.jinja
+- name: redis.jinja
+  path: templates/redis.jinja
+- name: spinnaker.sh
+  path: scripts/spinnaker.sh
+- name: redis.sh
+  path: scripts/redis.sh
+- name: jenkins.sh
+  path: scripts/jenkins.sh
+
+required:
+  - jenkinsPassword
+
+properties:
+  region:
+    type: string
+    description: "Google Cloud Region to deploy Spinnaker stack"
+    default: "us-west1"
+  zone:
+    type: string
+    description: "Google Cloud Zone to deploy Spinnaker stack"
+    default: "us-west1-a"
+  ipCidrRange:
+    type: string
+    description: "Subnet to place Spinnaker VMs in, must be valid CIDR"
+    default: "10.254.0.0/24"
+  spinnakerMachineType:
+    type: string
+    description: "Machine type for the VM running Spinnaker components"
+    default: "n1-standard-4"
+  spinnakerIP:
+    type: string
+    description: "Internal address for the spinnaker instance"
+    default: "10.254.0.200"
+  jenkinsIP:
+    type: string
+    description: "Internal address for the Jenkins instance"
+    default: "10.254.0.201"
+  jenkinsPassword:
+    type: string
+    description: "Default password for the Jenkins instance"
+  jenkinsMachineType:
+    type: string
+    description: "Machine type for the VM running Jenkins"
+    default: "n1-standard-1"
+  redisIP:
+    type: string
+    description: "Internal address for the Redis instance"
+    default: "10.254.0.202"
+  redisMachineType:
+    type: string
+    description: "Machine type for the VM running Jenkins"
+    default: "n1-highmem-2"

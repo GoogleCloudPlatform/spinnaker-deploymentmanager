@@ -12,21 +12,23 @@ a pipeline.
 ## Deploying
 
 1. Download the repository.
-1. Ensure the configuration of the cluster is to your liking in `config.yaml`
-1. Set the Jenkins Password in `config.yaml`
 1. Create the deployment:
 
-       gcloud deployment-manager deployments create --config config.yaml prod
+       gcloud deployment-manager deployments create --config config.yaml [DEPLOYMENT_NAME] --properties jenkinsPassword=<your-password>
 1. Once instance provisioning is complete get the name of your Spinnaker instance by
    running:
 
        gcloud compute instances list | grep spinnaker
-1. Access the Spinnaker UI by creating an SSH tunnel to your Spinnaker instance as follows:
+1. Creating an SSH tunnel to your Spinnaker instance as follows:
 
-       gcloud compute ssh prod-spinnaker-ogo8 --zone us-west1-a -- -L 9000:localhost:9000 -L8084:localhost:8084
+       gcloud compute ssh [DEPLOYMENT_NAME]-spinnaker-ogo8 --zone us-west1-a -- -L 9000:localhost:9000 -L8084:localhost:8084
+
+1. Access the UI by visiting the following web address:
+
+       http://localhost:9000
 
 ## Teardown
 
 1. Delete the deployment by running:
 
-       gcloud deployment-manager deployments delete prod
+       gcloud deployment-manager deployments delete [DEPLOYMENT_NAME]

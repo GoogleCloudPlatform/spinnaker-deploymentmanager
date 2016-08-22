@@ -12,28 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-info:
-  title: Spinnaker
-  author: Vic Iglesias <viglesias@google.com>
-  description: Runs Spinnaker and its dependencies
-  version: 1.0
-
-imports:
-- path: config.yaml
-
-required:
-  - region
-  - zone
-  - ipCidrRange
-  - spinnakerMachineType
-  - spinnakerIP
-  - jenkinsPassword
-  - jenkinsMachineType
-  - jenkinsIP
-  - redisMachineType
-  - redisIP
-
-properties:
-  jenkinsPassword:
-    type: string
-    description: "Default password for the Jenkins instance"
+resources:
+- type: spinnaker-stack.jinja
+  name: spinnaker-stack
+  properties:
+    region: {{ properties["region"] }}
+    zone: {{ properties["zone"] }}
+    ipCidrRange: {{ properties["ipCidrRange"] }}
+    spinnakerMachineType: {{ properties["spinnakerMachineType"] }}
+    spinnakerIP: {{ properties["spinnakerIP"] }}
+    jenkinsPassword: {{ properties["jenkinsPassword"] }}
+    jenkinsMachineType: {{ properties["jenkinsMachineType"] }}
+    jenkinsIP: {{ properties["jenkinsIP"] }}
+    redisMachineType: {{ properties["redisMachineType"] }}
+    redisIP: {{ properties["redisIP"] }}
