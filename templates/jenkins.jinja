@@ -53,7 +53,7 @@ resources:
           - https://www.googleapis.com/auth/logging.write
           - https://www.googleapis.com/auth/monitoring.write
           - https://www.googleapis.com/auth/cloudruntimeconfig
-        machineType: {{ properties["machineType"] }}
+        machineType: {{ properties["jenkinsMachineType"] }}
         tags:
           items:
             - jenkins-vm

@@ -8,7 +8,7 @@ resources:
     spinnakerMachineType: n1-standard-4
     spinnakerIP: 10.254.0.200
   # Fill this in
-  # jenkinsPassword: my-password-here
+    jenkinsPassword: my-password-here
     jenkinsMachineType: n1-standard-1
     jenkinsIP: 10.254.0.201
     redisMachineType: n1-highmem-2
