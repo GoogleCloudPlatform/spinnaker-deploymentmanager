@@ -13,19 +13,21 @@ a pipeline.
 
 1. Download the repository.
 1. Create the deployment:
+    
+        gcloud deployment-manager deployments create --config config.jinja [DEPLOYMENT_NAME] --properties jenkinsPassword=[YOUR_PASSWORD]
 
-       gcloud deployment-manager deployments create --config config.jinja [DEPLOYMENT_NAME] --properties jenkinsPassword=[YOUR_PASSWORD]
 1. Once instance provisioning is complete get the name of your Spinnaker instance by
    running:
 
-       gcloud compute instances list | grep spinnaker
+        gcloud compute instances list | grep spinnaker
+       
 1. Creating an SSH tunnel to your Spinnaker instance as follows:
 
-       gcloud compute ssh [DEPLOYMENT_NAME]-spinnaker-ogo8 --zone us-west1-a -- -L 9000:localhost:9000 -L8084:localhost:8084
+        gcloud compute ssh [DEPLOYMENT_NAME]-spinnaker-ogo8 --zone us-west1-a -- -L 9000:localhost:9000 -L8084:localhost:8084
 
 1. Access the UI by visiting the following web address:
 
-       http://localhost:9000
+        http://localhost:9000
 
 ## Teardown
 
