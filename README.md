@@ -14,7 +14,7 @@ a pipeline.
 1. Download the repository.
 1. Create the deployment:
 
-       gcloud deployment-manager deployments create --config config.yaml [DEPLOYMENT_NAME] --properties jenkinsPassword=[YOUR_PASSWORD]
+       gcloud deployment-manager deployments create --config config.jinja [DEPLOYMENT_NAME] --properties jenkinsPassword=[YOUR_PASSWORD]
 1. Once instance provisioning is complete get the name of your Spinnaker instance by
    running:
 
