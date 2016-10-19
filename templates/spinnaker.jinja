@@ -13,13 +13,20 @@
 # limitations under the License.
 
 resources:
+- name: {{ env["deployment"] }}-spinnaker-hc
+  type: compute.v1.httpHealthCheck
+  properties:
+    port: 9000
 - name: {{ env["deployment"] }}-spinnaker-ig
-  type: compute.v1.instanceGroupManager
+  type: compute.beta.instanceGroupManager
   properties:
     baseInstanceName: {{ env["deployment"] }}-spinnaker
     instanceTemplate: $(ref.{{ env["deployment"] }}-spinnaker-template.selfLink)
     targetSize: 1
     zone: {{ properties["zone"] }}
+    autoHealingPolicies:
+    - healthCheck: $(ref.{{ env["deployment"] }}-spinnaker-hc.selfLink)
+      initialDelaySec: 300
 - name: {{ env["deployment"] }}-spinnaker-bucket
   type: storage.v1.bucket
   properties:
