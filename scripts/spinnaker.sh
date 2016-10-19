@@ -60,8 +60,8 @@ SPINNAKER_GOOGLE_DEFAULT_REGION=$REGION
 SPINNAKER_GOOGLE_DEFAULT_ZONE=$ZONE
 
 SPINNAKER_JENKINS_ENABLED=true
-SPINNAKER_JENKINS_BASEURL=http://$JENKINS_IP/jenkins
-SPINNAKER_JENKINS_USER=user
+SPINNAKER_JENKINS_BASEURL=http://$JENKINS_IP/
+SPINNAKER_JENKINS_USER=jenkins
 SPINNAKER_JENKINS_PASSWORD=$JENKINS_PASSWORD
 
 SPINNAKER_REDIS_HOST=$REDIS_IP
@@ -82,6 +82,3 @@ service clouddriver restart
 service rosco restart
 service orca restart
 service igor restart
-
-wget https://gist.githubusercontent.com/viglesiasce/ca07a1001bc5ca84957541fd80095d64/raw/runSpinnakerScript.xml
-curl -X POST -H "Content-Type: application/xml" -d @runSpinnakerScript.xml "http://user:$JENKINS_PASSWORD@$JENKINS_IP/jenkins/createItem?name=runSpinnakerScript"

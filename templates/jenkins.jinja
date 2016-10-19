@@ -13,35 +13,21 @@
 # limitations under the License.
 
 resources:
+- name: {{ env["deployment"] }}-jenkins-hc
+  type: compute.v1.httpHealthCheck
+  properties:
+    port: 80
+    requestPath: /login
 - name: {{ env["deployment"] }}-jenkins-ig
-  type: compute.v1.instanceGroupManager
+  type: compute.beta.instanceGroupManager
   properties:
     baseInstanceName: {{ env["deployment"] }}-jenkins
     instanceTemplate: $(ref.{{ env["deployment"] }}-jenkins-template.selfLink)
     targetSize: 1
     zone: {{ properties["zone"] }}
-- name: {{ env["deployment"] }}-config
-  type: runtimeconfig.v1beta1.config
-  properties:
-    config: {{ env["deployment"] }}-config
-    description: Holds software readiness status for deployment {{ env["deployment"] }}
-- name: {{ env["deployment"] }}-software
-  type: runtimeconfig.v1beta1.waiter
-  metadata:
-    dependsOn:
-    - {{ env["deployment"] }}-jenkins-ig
-  properties:
-    failure:
-      cardinality:
-        number: 1
-        path: status/failure
-    parent: $(ref.{{ env["deployment"] }}-config.name)
-    success:
-      cardinality:
-        number: 1
-        path: status/success
-    timeout: 480s
-    waiter: software
+    autoHealingPolicies:
+    - healthCheck: $(ref.{{ env["deployment"] }}-jenkins-hc.selfLink)
+      initialDelaySec: 300
 - name: {{ env["deployment"] }}-jenkins-template
   type: compute.v1.instanceTemplate
   properties:
@@ -54,7 +40,6 @@ resources:
           - https://www.googleapis.com/auth/devstorage.read_only
           - https://www.googleapis.com/auth/logging.write
           - https://www.googleapis.com/auth/monitoring.write
-          - https://www.googleapis.com/auth/cloudruntimeconfig
         machineType: {{ properties["jenkinsMachineType"] }}
         tags:
           items:
@@ -74,20 +59,12 @@ resources:
           initializeParams:
             diskSizeGb: 10
             diskType: pd-standard
-            sourceImage: https://www.googleapis.com/compute/v1/projects/bitnami-launchpad/global/images/bitnami-jenkins-1-658-1-linux-debian-8-x86-64
+            sourceImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
           type: PERSISTENT
         metadata:
           items:
-          - key: google-cloud-marketplace-generate-password
-            value: bitnami-base-password
-          - key: bitnami-base-password
+          - key: jenkinsPassword
             value: {{ properties["jenkinsPassword"] }}
-          - key: status-config-url
-            value: https://runtimeconfig.googleapis.com/v1beta1/projects/{{ env["project"] }}/configs/{{ env["deployment"] }}-config
-          - key: status-variable-path
-            value: status
-          - key: status-uptime-deadline
-            value: 420
           - key: startup-script
             value: |
-               {{ imports['jenkins.sh']|indent(15) }}
+               {{ imports['jenkins.sh']| indent(15) }}
