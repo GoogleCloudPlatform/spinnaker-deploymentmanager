@@ -48,8 +48,8 @@ service apache2 restart
 # Install Packer
 mkdir -p /tmp/packer
 pushd /tmp/packer
-  curl -s -L -O https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip
-  unzip -u -o -q packer_0.8.6_linux_amd64.zip -d /usr/bin
+  curl -s -L -O https://releases.hashicorp.com/packer/0.12.2/packer_0.12.2_linux_amd64.zip
+  unzip -u -o -q packer_0.12.2_linux_amd64.zip -d /usr/bin
 popd
 rm -rf /tmp/packer
 cat > /etc/default/spinnaker <<EOF
