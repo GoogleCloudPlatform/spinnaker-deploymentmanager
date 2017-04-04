@@ -32,6 +32,8 @@ imports:
   path: templates/redis.jinja
 - name: spinnaker.sh
   path: scripts/spinnaker.sh
+- name: spinnaker-local.yml
+  path: config/spinnaker-local.yml
 - name: redis.sh
   path: scripts/redis.sh
 - name: jenkins.sh

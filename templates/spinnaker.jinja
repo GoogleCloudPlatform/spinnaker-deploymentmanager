@@ -78,6 +78,29 @@ resources:
             value: {{ properties["jenkinsPassword"] }}
           - key: redisIP
             value: {{ properties["redisIP"] }}
+          - key: packerVersion
+            value: {{ properties["packerVersion"] }}
+          - key: clouddriverVersion
+            value: {{ properties["clouddriverVersion"] }}
+          - key: deckVersion
+            value: {{ properties["deckVersion"] }}
+          - key: echoVersion
+            value: {{ properties["echoVersion"] }}
+          - key: front50Version
+            value: {{ properties["front50Version"] }}
+          - key: gateVersion
+            value: {{ properties["gateVersion"] }}
+          - key: igorVersion
+            value: {{ properties["igorVersion"] }}
+          - key: orcaVersion
+            value: {{ properties["orcaVersion"] }}
+          - key: roscoVersion
+            value: {{ properties["roscoVersion"] }}
+          - key: spinnakerVersion
+            value: {{ properties["spinnakerVersion"] }}
+          - key: spinnakerLocal
+            value: |
+               {{ imports['spinnaker-local.yml']| indent(15) }}
           - key: startup-script
             value: |
                {{ imports['spinnaker.sh']| indent(15) }}
