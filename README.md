@@ -22,14 +22,14 @@ a pipeline.
 1. Once instance provisioning is complete get the name of your Spinnaker and Jenkins instances by
    running:
 
-        export SPINNAKER_VM=$(gcloud compute instances list --regexp ".*spinnaker.*" --uri)
-        export JENKINS_VM=$(gcloud compute instances list --regexp ".*jenkins.*" --uri)
+        export SPINNAKER_VM=$(gcloud compute instances list --regexp "${DEPLOYMENT_NAME}-spinnaker.+" --uri)
+        export JENKINS_VM=$(gcloud compute instances list --regexp "${DEPLOYMENT_NAME}-jenkins.+" --uri)
 
 1. Creating an SSH tunnel to your Spinnaker instance as follows:
 
         gcloud compute ssh ${SPINNAKER_VM} -- -L 9000:localhost:9000 -L8080:$(basename $JENKINS_VM):8080
 
-1. Access the Spinnaker and Jenkins UIs respectively by visiting the following web address:
+1. After a few minutes, you can access the Spinnaker and Jenkins UIs respectively by visiting the following web address:
 
         http://localhost:9000
         http://localhost:8080
