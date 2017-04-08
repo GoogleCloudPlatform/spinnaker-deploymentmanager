@@ -34,6 +34,8 @@ imports:
   path: scripts/spinnaker.sh
 - name: spinnaker-local.yml
   path: config/spinnaker-local.yml
+- name: gce-ansible.json
+  path: config/gce-ansible.json
 - name: redis.sh
   path: scripts/redis.sh
 - name: jenkins.sh

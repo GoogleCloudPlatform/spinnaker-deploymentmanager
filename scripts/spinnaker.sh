@@ -91,6 +91,8 @@ script:
   job: runSpinnakerScript
 EOF
 
+metadata_value "instance/attributes/gceAnsible" > /opt/rosco/config/packer/gce-ansible.json
+
 metadata_value "instance/attributes/spinnakerLocal" > /opt/spinnaker/config/spinnaker-local.yml
 
 /opt/spinnaker/bin/reconfigure_spinnaker.sh

@@ -101,6 +101,9 @@ resources:
           - key: spinnakerLocal
             value: |
                {{ imports['spinnaker-local.yml']| indent(15) }}
+          - key: gceAnsible
+            value: |
+               {{ imports['gce-ansible.json']| indent(15) }}
           - key: startup-script
             value: |
                {{ imports['spinnaker.sh']| indent(15) }}

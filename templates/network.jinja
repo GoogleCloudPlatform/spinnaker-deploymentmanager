@@ -47,7 +47,6 @@ resources:
       - spinnaker-vm
     targetTags:
       - redis-vm
-      - allow-ssh
 - type: compute.v1.firewall
   name: jenkins-fw
   properties:
@@ -55,7 +54,7 @@ resources:
      network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
      allowed:
      - IPProtocol: tcp
-       ports: ["80"]
+       ports: ["80","8080"]
      sourceTags:
      - spinnaker-vm
      targetTags:

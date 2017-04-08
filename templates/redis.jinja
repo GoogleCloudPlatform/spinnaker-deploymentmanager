@@ -34,6 +34,7 @@ resources:
         tags:
           items:
             - redis-vm
+            - allow-ssh
         networkInterfaces:
         - network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
           subnetwork: $(ref.{{ env["deployment"] }}-spinnaker-subnetwork.selfLink)
