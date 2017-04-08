@@ -78,6 +78,16 @@ cat > /var/lib/jenkins/config.xml <<EOF
 </hudson>
 EOF
 
+# Install initial plugins
+JENKINS_PLUGIN_DIR=/var/lib/jenkins/plugins
+mkdir -p ${JENKINS_PLUGIN_DIR}
+PLUGINS="structs/1.6/structs.hpi workflow-step-api/1.14.2/workflow-step-api.hpi workflow-scm-step/1.14.2/workflow-scm-step.hpi git-client/2.4.1/git-client.hpi scm-api/2.1.1/scm-api.hpi git/3.2.0/git.hpi"
+JENKINS_PLUGIN_URL="http://updates.jenkins-ci.org/download/plugins"
+for p in ${PLUGINS}; do
+  curl --retry 3 --retry-delay 5 -sSL -f ${JENKINS_PLUGIN_URL}/${p} -o ${JENKINS_PLUGIN_DIR}/$(basename ${p})
+done
+chown -R jenkins:jenkins ${JENKINS_PLUGIN_DIR}
+
 # Create spinnaker job
 mkdir -p /var/lib/jenkins/jobs/runSpinnakerScript
 cat > /var/lib/jenkins/jobs/runSpinnakerScript/config.xml <<EOF
