@@ -10,6 +10,7 @@
     "appversion": "",
     "build_host": "",
     "repository": "",
+    "repository_hash": "master",
     "package_type": "",
     "packages": "",
     "upgrade": "",
@@ -32,10 +33,12 @@
   "provisioners": [
     {
      "type": "shell",
-     "inline": ["sudo apt-get update",
-                "sudo apt-get install -y ansible git",
-                "sudo git clone {{user `repository`}} /opt/deploy",
-                "sudo ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i 'localhost,' /opt/deploy/bake.yml"]
+     "inline": ["sudo apt-add-repository -y ppa:ansible/ansible",
+                "sudo apt-get update",
+                "sudo apt-get install -y ansible=2.3.0.0-1ppa~xenial git=1:2.7.4-0ubuntu1",
+                "sudo git clone {{user `repository`}} /opt/go/src/deploy",
+                "cd /opt/go/src/deploy && sudo git checkout {{user `repository_hash`}}",
+                "sudo ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i 'localhost,' bake.yml"]
     }
   ]
 }
