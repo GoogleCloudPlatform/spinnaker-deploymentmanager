@@ -47,7 +47,6 @@ resources:
       - spinnaker-vm
     targetTags:
       - redis-vm
-      - allow-ssh
 - type: compute.v1.firewall
   name: jenkins-fw
   properties:
@@ -55,7 +54,7 @@ resources:
      network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
      allowed:
      - IPProtocol: tcp
-       ports: ["80"]
+       ports: ["80","8080"]
      sourceTags:
      - spinnaker-vm
      targetTags:
@@ -84,3 +83,40 @@ resources:
     - "130.211.0.0/22"
     targetTags:
     - spinnaker-vm
+- type: compute.v1.globalForwardingRule
+  name: {{ env["deployment"] }}-spinnaker-api-lb
+  properties:
+    IPProtocol: TCP
+    portRange: 80
+    target: $(ref.{{ env["deployment"] }}-spinnaker-api-targetproxy.selfLink)
+- type: compute.v1.targetHttpProxy
+  name: {{ env["deployment"] }}-spinnaker-api-targetproxy
+  properties:
+    urlMap: $(ref.{{ env["deployment"] }}-spinnaker-api.selfLink)
+- type: compute.v1.urlMap
+  name: {{ env["deployment"] }}-spinnaker-api
+  properties:
+    defaultService: $(ref.null-backend.selfLink)
+    hostRules:
+      - hosts: ["*"]
+        pathMatcher: pathmap
+    pathMatchers:
+      - name: pathmap
+        defaultService: $(ref.null-backend.selfLink)
+        pathRules:
+          - paths: ["/gate/webhooks/git/github", "/gate/webhooks/git/github/*"]
+            service: $(ref.{{ env["deployment"] }}-spinnaker-api-backend.selfLink)
+- type: compute.v1.backendService
+  name: null-backend
+  properties:
+    backends: []
+    healthChecks: [ $(ref.{{ env["deployment"] }}-spinnaker-hc.selfLink) ]
+- type: compute.v1.backendService
+  name: {{ env["deployment"] }}-spinnaker-api-backend
+  properties:
+    port: 9000
+    portName: "api"
+    backends:
+      - name: spinnaker-api
+        group: $(ref.{{ env["deployment"] }}-spinnaker-ig.instanceGroup)
+    healthChecks: [ $(ref.{{ env["deployment"] }}-spinnaker-hc.selfLink) ]

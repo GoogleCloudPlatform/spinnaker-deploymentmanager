@@ -26,6 +26,17 @@ JENKINS_IP=`metadata_value "instance/attributes/jenkinsIP"`
 JENKINS_PASSWORD=`metadata_value "instance/attributes/jenkinsPassword"`
 REDIS_IP=`metadata_value "instance/attributes/redisIP"`
 
+PACKER_VERSION=`metadata_value "instance/attributes/packerVersion"`
+CLOUDDRIVER_VERSION=`metadata_value "instance/attributes/clouddriverVersion"`
+DECK_VERSION=`metadata_value "instance/attributes/deckVersion"`
+ECHO_VERSION=`metadata_value "instance/attributes/echoVersion"`
+FRONT50_VERSION=`metadata_value "instance/attributes/front50Version"`
+GATE_VERSION=`metadata_value "instance/attributes/gateVersion"`
+IGOR_VERSION=`metadata_value "instance/attributes/igorVersion"`
+ORCA_VERSION=`metadata_value "instance/attributes/orcaVersion"`
+ROSCO_VERSION=`metadata_value "instance/attributes/roscoVersion"`
+SPINNAKER_VERSION=`metadata_value "instance/attributes/spinnakerVersion"`
+
 curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh
 bash install-logging-agent.sh
 curl -sSO https://repo.stackdriver.com/stack-install.sh
@@ -35,10 +46,16 @@ echo "deb https://dl.bintray.com/spinnaker/debians trusty spinnaker" > /etc/apt/
 curl -s -f "https://bintray.com/user/downloadSubjectPublicKey?username=spinnaker" | apt-key add -
 add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
-apt-get install -y openjdk-8-jdk spinnaker-clouddriver \
-                   spinnaker-deck spinnaker-echo spinnaker-front50 \
-                   spinnaker-gate spinnaker-igor spinnaker-orca \
-                   spinnaker-rosco spinnaker unzip
+apt-get install -y openjdk-8-jdk unzip \
+                   spinnaker-clouddriver=${CLOUDDRIVER_VERSION} \
+                   spinnaker-deck=${DECK_VERSION} \
+                   spinnaker-echo=${ECHO_VERSION} \
+                   spinnaker-front50=${FRONT50_VERSION} \
+                   spinnaker-gate=${GATE_VERSION} \
+                   spinnaker-igor=${IGOR_VERSION} \
+                   spinnaker-orca=${ORCA_VERSION} \
+                   spinnaker-rosco=${ROSCO_VERSION} \
+                   spinnaker=${SPINNAKER_VERSION}
 
 # Configure Web Server for Gate
 echo "Listen 0.0.0.0:9000" >> /etc/apache2/ports.conf
@@ -48,8 +65,8 @@ service apache2 restart
 # Install Packer
 mkdir -p /tmp/packer
 pushd /tmp/packer
-  curl -s -L -O https://releases.hashicorp.com/packer/0.12.2/packer_0.12.2_linux_amd64.zip
-  unzip -u -o -q packer_0.12.2_linux_amd64.zip -d /usr/bin
+  curl -s -L -O https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+  unzip -u -o -q packer_${PACKER_VERSION}_linux_amd64.zip -d /usr/bin
 popd
 rm -rf /tmp/packer
 cat > /etc/default/spinnaker <<EOF
@@ -74,7 +91,9 @@ script:
   job: runSpinnakerScript
 EOF
 
-wget https://gist.githubusercontent.com/viglesiasce/fa9806d22cb7d9d92761b27693904a11/raw/spinnaker-local.yml -O /opt/spinnaker/config/spinnaker-local.yml
+metadata_value "instance/attributes/gceAnsible" > /opt/rosco/config/packer/gce-ansible.json
+
+metadata_value "instance/attributes/spinnakerLocal" > /opt/spinnaker/config/spinnaker-local.yml
 
 /opt/spinnaker/bin/reconfigure_spinnaker.sh
 /opt/spinnaker/install/change_cassandra.sh --echo=inMemory --front50=gcs --change_defaults=true --change_local=false

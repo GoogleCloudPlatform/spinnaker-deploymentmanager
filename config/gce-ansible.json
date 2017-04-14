@@ -1,0 +1,44 @@
+{
+  "variables": {
+    "gce_project_id": null,
+    "gce_account_file": "",
+    "gce_zone": null,
+    "gce_network": null,
+    "gce_source_image": null,
+    "gce_target_image": null,
+    "gce_use_internal_ip": "false",
+    "appversion": "",
+    "build_host": "",
+    "repository": "",
+    "repository_hash": "master",
+    "package_type": "",
+    "packages": "",
+    "upgrade": "",
+    "configDir": null
+  },
+  "builders": [{
+    "type": "googlecompute",
+    "project_id": "{{user `gce_project_id`}}",
+    "account_file": "{{user `gce_account_file`}}",
+    "zone": "{{user `gce_zone`}}",
+    "network": "{{user `gce_network`}}",
+    "state_timeout": "15m",
+    "ssh_username": "packerio",
+    "ssh_pty": true,
+    "source_image": "{{user `gce_source_image`}}",
+    "image_name": "{{user `gce_target_image`}}",
+    "use_internal_ip": "{{user `gce_use_internal_ip`}}",
+    "image_description": "appversion: {{user `appversion`}}, build_host: {{user `build_host`}}, build_info_url: {{user `build_info_url`}}"
+  }],
+  "provisioners": [
+    {
+     "type": "shell",
+     "inline": ["sudo apt-add-repository -y ppa:ansible/ansible",
+                "sudo apt-get update",
+                "sudo apt-get install -y ansible=2.3.0.0-1ppa~xenial git=1:2.7.4-0ubuntu1",
+                "sudo git clone {{user `repository`}} /opt/go/src/deploy",
+                "cd /opt/go/src/deploy && sudo git checkout {{user `repository_hash`}}",
+                "sudo ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i 'localhost,' bake.yml"]
+    }
+  ]
+}

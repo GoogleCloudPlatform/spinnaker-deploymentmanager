@@ -13,24 +13,35 @@ a pipeline.
 
 1. Download the repository.
 1. Create the deployment:
-    
-        gcloud deployment-manager deployments create --config config.jinja [DEPLOYMENT_NAME] --properties jenkinsPassword:[YOUR_PASSWORD]
 
-1. Once instance provisioning is complete get the name of your Spinnaker instance by
+        export GOOGLE_PROJECT=$(gcloud config get-value project)
+        export DEPLOYMENT_NAME="${USER}-test1"
+        export JENKINS_PASSWORD=$(openssl rand -base64 15)
+        gcloud deployment-manager deployments create --config config.jinja ${DEPLOYMENT_NAME} --properties jenkinsPassword:${JENKINS_PASSWORD}
+
+1. Once instance provisioning is complete get the name of your Spinnaker and Jenkins instances by
    running:
 
-        gcloud compute instances list | grep spinnaker
-       
+        export SPINNAKER_VM=$(gcloud compute instances list --regexp "${DEPLOYMENT_NAME}-spinnaker.+" --uri)
+        export JENKINS_VM=$(gcloud compute instances list --regexp "${DEPLOYMENT_NAME}-jenkins.+" --uri)
+
 1. Creating an SSH tunnel to your Spinnaker instance as follows:
 
-        gcloud compute ssh [DEPLOYMENT_NAME]-spinnaker-ogo8 --zone us-west1-a -- -L 9000:localhost:9000 -L8084:localhost:8084
+        gcloud compute ssh ${SPINNAKER_VM} -- -L 9000:localhost:9000 -L8080:$(basename $JENKINS_VM):8080
 
-1. Access the UI by visiting the following web address:
+1. After a few minutes, you can access the Spinnaker and Jenkins UIs respectively by visiting the following web address:
 
         http://localhost:9000
+        http://localhost:8080
 
 ## Teardown
 
+1. Stop the front50 service then delete the GCS objects and bucket:
+
+       gcloud compute ssh ${SPINNAKER_VM} -- sudo service front50 stop
+       gsutil rm -r gs://spinnaker-${GOOGLE_PROJECT}-${DEPLOYMENT_NAME}/front50
+       gsutil rb gs://spinnaker-${GOOGLE_PROJECT}-${DEPLOYMENT_NAME}
+
 1. Delete the deployment by running:
 
-       gcloud deployment-manager deployments delete [DEPLOYMENT_NAME]
+       gcloud deployment-manager deployments delete ${DEPLOYMENT_NAME}
