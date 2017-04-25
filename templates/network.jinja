@@ -78,7 +78,7 @@ resources:
     network: $(ref.{{ env["deployment"] }}-spinnaker-network.selfLink)
     allowed:
     - IPProtocol: tcp
-      ports: ["9000"]
+      ports: ["8081"]
     sourceRanges:
     - "130.211.0.0/22"
     targetTags:
@@ -114,7 +114,7 @@ resources:
 - type: compute.v1.backendService
   name: {{ env["deployment"] }}-spinnaker-api-backend
   properties:
-    port: 9000
+    port: 8081
     portName: "api"
     backends:
       - name: spinnaker-api

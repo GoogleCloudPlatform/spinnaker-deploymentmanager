@@ -58,8 +58,8 @@ apt-get install -y openjdk-8-jdk unzip \
                    spinnaker=${SPINNAKER_VERSION}
 
 # Configure Web Server for Gate
-echo "Listen 0.0.0.0:9000" >> /etc/apache2/ports.conf
-sed -i 's#VirtualHost 127.0.0.1:9000#VirtualHost 0.0.0.0:9000#g' /etc/apache2/sites-enabled/spinnaker.conf
+echo "Listen 0.0.0.0:8081" >> /etc/apache2/ports.conf
+sed -i 's#VirtualHost 127.0.0.1:9000#VirtualHost 0.0.0.0:8081#g' /etc/apache2/sites-enabled/spinnaker.conf
 service apache2 restart
 
 # Install Packer
