@@ -59,7 +59,11 @@ apt-get install -y openjdk-8-jdk unzip \
 
 # Configure Web Server for Gate
 echo "Listen 0.0.0.0:8081" >> /etc/apache2/ports.conf
-sed -i 's#VirtualHost 127.0.0.1:9000#VirtualHost 0.0.0.0:8081#g' /etc/apache2/sites-enabled/spinnaker.conf
+sed -i \
+  -e 's#VirtualHost 127.0.0.1:9000#VirtualHost 0.0.0.0:8081#g' \
+  -e '$i\\n  <Location "/gate">\n    Header set Content-Type "application/json; charset=utf-8" \n  </Location>' \
+    /etc/apache2/sites-enabled/spinnaker.conf
+a2enmod headers
 service apache2 restart
 
 # Install Packer
