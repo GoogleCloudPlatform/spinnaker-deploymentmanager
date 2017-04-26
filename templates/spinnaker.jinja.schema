@@ -29,11 +29,11 @@ properties:
   clouddriverVersion:
     type: string
     description: "Version of clouddriver"
-    default: "1.590.0"
+    default: "1.600.0"
   deckVersion:
     type: string
     description: "Version of deck"
-    default: "2.1071.0"
+    default: "2.1083.0"
   echoVersion:
     type: string
     description: "Version of echo"
@@ -45,7 +45,7 @@ properties:
   gateVersion:
     type: string
     description: "Version of gate"
-    default: "3.28.0"
+    default: "3.29.0"
   igorVersion:
     type: string
     description: "Version of igor"
@@ -53,7 +53,7 @@ properties:
   orcaVersion:
     type: string
     description: "Version of orca"
-    default: "1.387.0"
+    default: "1.398.0"
   roscoVersion:
     type: string
     description: "Version of rosco"
