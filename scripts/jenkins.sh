@@ -32,7 +32,7 @@ JENKINS_VERSION=1.658
 JENKINS_DEB=jenkins_${JENKINS_VERSION}_all.deb
 apt-get update
 apt-get install -y wget default-jre-headless iptables-persistent daemon nginx
-wget http://pkg.jenkins-ci.org/debian/binary/${JENKINS_DEB}
+wget https://storage.googleapis.com/solutions-public-assets/jenkins-cd/${JENKINS_DEB}
 dpkg -i ${JENKINS_DEB}
 
 usermod -a -G shadow jenkins
@@ -128,28 +128,8 @@ cat > /var/lib/jenkins/jobs/runSpinnakerScript/config.xml <<EOF
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>REGION_PARAM</name>
-          <description>The region the Spinnaker deployment is running against</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>ENV_PARAM</name>
           <description>Environment Spinnaker is running against</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CLUSTER_PARAM</name>
-          <description>The cluster Spinnaker is deploying to</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CMC</name>
-          <description>The CMC this deployment is associated with</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CONTEXT</name>
-          <description>The parameters available to this task</description>
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
