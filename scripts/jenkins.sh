@@ -81,7 +81,7 @@ EOF
 # Install initial plugins
 JENKINS_PLUGIN_DIR=/var/lib/jenkins/plugins
 mkdir -p ${JENKINS_PLUGIN_DIR}
-PLUGINS="structs/1.6/structs.hpi workflow-step-api/1.14.2/workflow-step-api.hpi workflow-scm-step/1.14.2/workflow-scm-step.hpi git-client/2.4.1/git-client.hpi scm-api/2.1.1/scm-api.hpi git/3.2.0/git.hpi"
+PLUGINS="structs/1.6/structs.hpi workflow-step-api/1.14.2/workflow-step-api.hpi workflow-scm-step/1.14.2/workflow-scm-step.hpi git-client/2.4.1/git-client.hpi scm-api/2.1.1/scm-api.hpi git/3.2.0/git.hpi google-source-plugin/0.3/google-source-plugin.hpi google-metadata-plugin/0.2/google-metadata-plugin.hpi oauth-credentials/0.3/oauth-credentials.hpi google-oauth-plugin/0.4/google-oauth-plugin.hpi"
 JENKINS_PLUGIN_URL="http://updates.jenkins-ci.org/download/plugins"
 for p in ${PLUGINS}; do
   curl --retry 3 --retry-delay 5 -sSL -f ${JENKINS_PLUGIN_URL}/${p} -o ${JENKINS_PLUGIN_DIR}/$(basename ${p})
@@ -137,6 +137,11 @@ cat > /var/lib/jenkins/jobs/runSpinnakerScript/config.xml <<EOF
           <description>git repository url.</description>
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>REPO_BRANCH</name>
+          <description>git repository branch.</description>
+          <defaultValue>master</defaultValue>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -150,7 +155,7 @@ cat > /var/lib/jenkins/jobs/runSpinnakerScript/config.xml <<EOF
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>master</name>
+        <name>\$REPO_BRANCH</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>

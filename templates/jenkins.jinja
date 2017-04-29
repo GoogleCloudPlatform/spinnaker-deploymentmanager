@@ -16,6 +16,7 @@ resources:
 - name: {{ env["deployment"] }}-jenkins-hc
   type: compute.v1.httpHealthCheck
   properties:
+    checkIntervalSec: 30
     port: 80
     requestPath: /login
 - name: {{ env["deployment"] }}-jenkins-ig
