@@ -32,7 +32,7 @@ JENKINS_VERSION=1.658
 JENKINS_DEB=jenkins_${JENKINS_VERSION}_all.deb
 apt-get update
 apt-get install -y wget default-jre-headless iptables-persistent daemon nginx
-wget http://pkg.jenkins-ci.org/debian/binary/${JENKINS_DEB}
+wget https://storage.googleapis.com/solutions-public-assets/jenkins-cd/${JENKINS_DEB}
 dpkg -i ${JENKINS_DEB}
 
 usermod -a -G shadow jenkins
@@ -81,7 +81,7 @@ EOF
 # Install initial plugins
 JENKINS_PLUGIN_DIR=/var/lib/jenkins/plugins
 mkdir -p ${JENKINS_PLUGIN_DIR}
-PLUGINS="structs/1.6/structs.hpi workflow-step-api/1.14.2/workflow-step-api.hpi workflow-scm-step/1.14.2/workflow-scm-step.hpi git-client/2.4.1/git-client.hpi scm-api/2.1.1/scm-api.hpi git/3.2.0/git.hpi"
+PLUGINS="structs/1.6/structs.hpi workflow-step-api/1.14.2/workflow-step-api.hpi workflow-scm-step/1.14.2/workflow-scm-step.hpi git-client/2.4.1/git-client.hpi scm-api/2.1.1/scm-api.hpi git/3.2.0/git.hpi google-source-plugin/0.3/google-source-plugin.hpi google-metadata-plugin/0.2/google-metadata-plugin.hpi oauth-credentials/0.3/oauth-credentials.hpi google-oauth-plugin/0.4/google-oauth-plugin.hpi"
 JENKINS_PLUGIN_URL="http://updates.jenkins-ci.org/download/plugins"
 for p in ${PLUGINS}; do
   curl --retry 3 --retry-delay 5 -sSL -f ${JENKINS_PLUGIN_URL}/${p} -o ${JENKINS_PLUGIN_DIR}/$(basename ${p})
@@ -128,34 +128,19 @@ cat > /var/lib/jenkins/jobs/runSpinnakerScript/config.xml <<EOF
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>REGION_PARAM</name>
-          <description>The region the Spinnaker deployment is running against</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>ENV_PARAM</name>
           <description>Environment Spinnaker is running against</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CLUSTER_PARAM</name>
-          <description>The cluster Spinnaker is deploying to</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CMC</name>
-          <description>The CMC this deployment is associated with</description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CONTEXT</name>
-          <description>The parameters available to this task</description>
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>REPO_URL</name>
           <description>git repository url.</description>
           <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>REPO_BRANCH</name>
+          <description>git repository branch.</description>
+          <defaultValue>master</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -170,7 +155,7 @@ cat > /var/lib/jenkins/jobs/runSpinnakerScript/config.xml <<EOF
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>master</name>
+        <name>\$REPO_BRANCH</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>

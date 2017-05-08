@@ -27,11 +27,11 @@ a pipeline.
 
 1. Creating an SSH tunnel to your Spinnaker instance as follows:
 
-        gcloud compute ssh ${SPINNAKER_VM} -- -L 9000:localhost:9000 -L8080:$(basename $JENKINS_VM):8080
+        gcloud compute ssh ${SPINNAKER_VM} -- -L 8081:localhost:8081 -L8080:$(basename $JENKINS_VM):8080
 
 1. After a few minutes, you can access the Spinnaker and Jenkins UIs respectively by visiting the following web address:
 
-        http://localhost:9000
+        http://localhost:8081
         http://localhost:8080
 
 ## Teardown

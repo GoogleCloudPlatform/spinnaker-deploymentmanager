@@ -16,7 +16,7 @@ resources:
 - name: {{ env["deployment"] }}-spinnaker-hc
   type: compute.v1.httpHealthCheck
   properties:
-    port: 9000
+    port: 8081
 - name: {{ env["deployment"] }}-spinnaker-ig
   type: compute.beta.instanceGroupManager
   properties:

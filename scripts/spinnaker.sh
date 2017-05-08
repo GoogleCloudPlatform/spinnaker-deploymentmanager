@@ -58,8 +58,23 @@ apt-get install -y openjdk-8-jdk unzip \
                    spinnaker=${SPINNAKER_VERSION}
 
 # Configure Web Server for Gate
-echo "Listen 0.0.0.0:9000" >> /etc/apache2/ports.conf
-sed -i 's#VirtualHost 127.0.0.1:9000#VirtualHost 0.0.0.0:9000#g' /etc/apache2/sites-enabled/spinnaker.conf
+echo "Listen 0.0.0.0:8081" >> /etc/apache2/ports.conf
+sed -i \
+  -e 's#VirtualHost 127.0.0.1:9000#VirtualHost 0.0.0.0:8081#g' \
+  -e '$i\\n  <Location "/gate">\n    Header set Content-Type "application/json; charset=utf-8" \n  </Location>' \
+    /etc/apache2/sites-available/spinnaker.conf
+
+# Configure web server proxy for Jenkins
+echo "Listen 0.0.0.0:8082" >> /etc/apache2/ports.conf
+cat > /etc/apache2/sites-available/jenkins.conf <<EOF
+<VirtualHost 0.0.0.0:8082>
+  ProxyPass "/" "http://${JENKINS_IP}:8080/" retry=0
+  ProxyPassReverse "/" "http://${JENKINS_IP}:8080/"
+</VirtualHost>
+EOF
+ln -sf /etc/apache2/sites-available/jenkins.conf /etc/apache2/sites-enabled/jenkins.conf
+
+a2enmod headers
 service apache2 restart
 
 # Install Packer
@@ -78,7 +93,7 @@ SPINNAKER_GOOGLE_DEFAULT_REGION=$REGION
 SPINNAKER_GOOGLE_DEFAULT_ZONE=$ZONE
 
 SPINNAKER_JENKINS_ENABLED=true
-SPINNAKER_JENKINS_BASEURL=http://$JENKINS_IP/
+SPINNAKER_JENKINS_BASEURL=http://localhost:8082/
 SPINNAKER_JENKINS_USER=jenkins
 SPINNAKER_JENKINS_PASSWORD=$JENKINS_PASSWORD
 
