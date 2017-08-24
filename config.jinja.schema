@@ -82,5 +82,5 @@ properties:
     default: "10.254.0.202"
   redisMachineType:
     type: string
-    description: "Machine type for the VM running Jenkins"
+    description: "Machine type for the VM running Redis"
     default: "n1-highmem-2"
