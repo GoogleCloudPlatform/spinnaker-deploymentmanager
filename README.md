@@ -17,7 +17,7 @@ a pipeline.
         export GOOGLE_PROJECT=$(gcloud config get-value project)
         export DEPLOYMENT_NAME="${USER}-test1"
         export JENKINS_PASSWORD=$(openssl rand -base64 15)
-        gcloud deployment-manager deployments create --config config.jinja ${DEPLOYMENT_NAME} --properties jenkinsPassword:${JENKINS_PASSWORD}
+        gcloud deployment-manager deployments create --template config.jinja ${DEPLOYMENT_NAME} --properties jenkinsPassword:${JENKINS_PASSWORD}
 
 1. Once instance provisioning is complete get the name of your Spinnaker and Jenkins instances by
    running:
