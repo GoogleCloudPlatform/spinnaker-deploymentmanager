@@ -54,7 +54,7 @@ resources:
             type: ONE_TO_ONE_NAT
           networkIP: {{ properties["jenkinsIP"] }}
         disks:
-        - autoDelete: true
+        - autoDelete: false
           boot: true
           deviceName: jenkins-vm-tmpl-boot-disk
           initializeParams:

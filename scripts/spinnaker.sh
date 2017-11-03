@@ -43,6 +43,8 @@ curl -sSO https://repo.stackdriver.com/stack-install.sh
 bash stack-install.sh --write-gcm
 
 echo "deb https://dl.bintray.com/spinnaker/debians trusty spinnaker" > /etc/apt/sources.list.d/spinnaker.list
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+curl -s -f "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | apt-key add -
 curl -s -f "https://bintray.com/user/downloadSubjectPublicKey?username=spinnaker" | apt-key add -
 add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
@@ -55,7 +57,8 @@ apt-get install -y openjdk-8-jdk unzip \
                    spinnaker-igor=${IGOR_VERSION} \
                    spinnaker-orca=${ORCA_VERSION} \
                    spinnaker-rosco=${ROSCO_VERSION} \
-                   spinnaker=${SPINNAKER_VERSION}
+                   spinnaker=${SPINNAKER_VERSION} \
+                   kubectl
 
 # Configure Web Server for Gate
 echo "Listen 0.0.0.0:8081" >> /etc/apache2/ports.conf

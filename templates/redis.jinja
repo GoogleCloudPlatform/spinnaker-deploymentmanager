@@ -46,9 +46,9 @@ resources:
         - deviceName: boot
           type: PERSISTENT
           boot: true
-          autoDelete: true
+          autoDelete: false
           initializeParams:
-            sourceImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-1404-lts
+            sourceImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
         metadata:
           items:
           - key: startup-script
