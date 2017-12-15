@@ -258,7 +258,7 @@ services:
     # override these values. Remember to run `reconfigure_spinnaker.sh` after.
     #baseUrl: http://spinnaker.mydomain.com
     port: 8081
-    gateUrl: ${services.deck.baseUrl}/gate
+    gateUrl: /gate
     #bakeryUrl: ${services.deck.baseUrl}/rosco
     auth:
       enabled: false
