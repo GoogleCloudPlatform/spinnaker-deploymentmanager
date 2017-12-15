@@ -39,7 +39,7 @@ properties:
   echoVersion:
     type: string
     description: "Version of echo"
-    default: "1.154.0"
+    default: "1.153.0"
   front50Version:
     type: string
     description: "Version of front50"
