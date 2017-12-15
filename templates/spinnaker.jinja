@@ -26,7 +26,7 @@ resources:
     zone: {{ properties["zone"] }}
     autoHealingPolicies:
     - healthCheck: $(ref.{{ env["deployment"] }}-spinnaker-hc.selfLink)
-      initialDelaySec: 300
+      initialDelaySec: 600
 - name: spinnaker-{{ env["project"] }}-{{ env["deployment"] }}
   type: storage.v1.bucket
   properties:
