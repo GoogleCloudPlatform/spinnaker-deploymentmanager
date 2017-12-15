@@ -22,43 +22,45 @@ imports:
 - path: spinnaker.jinja
 
 properties:
+  # Checking for new versions of spinnaker components:
+  #   apt-cache madison spinnaker-COMPONENT | cut -d '|' -f2 |sort --version-sort | tail -1
   packerVersion:
     type: string
     description: "Version of packer"
-    default: "1.0.0"
+    default: "1.1.3"
   clouddriverVersion:
     type: string
     description: "Version of clouddriver"
-    default: "1.603.0"
+    default: "1.748.1"
   deckVersion:
     type: string
     description: "Version of deck"
-    default: "2.1086.0"
+    default: "2.1160.0"
   echoVersion:
     type: string
     description: "Version of echo"
-    default: "1.132.0"
+    default: "1.154.0"
   front50Version:
     type: string
     description: "Version of front50"
-    default: "1.90.0"
+    default: "1.99.0"
   gateVersion:
     type: string
     description: "Version of gate"
-    default: "3.30.0"
+    default: "4.9.2"
   igorVersion:
     type: string
     description: "Version of igor"
-    default: "1.67.0"
+    default: "1.83.1"
   orcaVersion:
     type: string
     description: "Version of orca"
-    default: "1.400.0"
+    default: "5.3.1"
   roscoVersion:
     type: string
     description: "Version of rosco"
-    default: "0.93.0"
+    default: "0.99.0"
   spinnakerVersion:
     type: string
     description: "Version of spinnaker"
-    default: "0.80.0"
+    default: "0.82.0"
