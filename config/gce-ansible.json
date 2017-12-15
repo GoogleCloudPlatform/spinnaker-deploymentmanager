@@ -35,7 +35,7 @@
      "type": "shell",
      "inline": ["sudo apt-add-repository -y ppa:ansible/ansible",
                 "sudo apt-get update",
-                "sudo apt-get install -y ansible=2.3.0.0-1ppa~xenial git=1:2.7.4-0ubuntu1",
+                "sudo apt-get install -y git ansible=$(apt-cache madison ansible | cut -d '|' -f2 | grep ppa | tr -d '[:space:]')",
                 "sudo git clone {{user `repository`}} /opt/go/src/deploy",
                 "cd /opt/go/src/deploy && sudo git checkout {{user `repository_hash`}}",
                 "sudo ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i 'localhost,' bake.yml"]
